@@ -3,6 +3,10 @@ var hlt1 = 3;
 var sta1 = 3;
 var hlt2 = 3;
 var sta2 = 3;
+// var rstBtn = document.getElementById("rst");
+var blkBtn = document.getElementById("blk");
+var evdBtn = document.getElementById("evd");
+var atkBtn = document.getElementById("atk");
 // image to change during different moves
 var pic = document.getElementById("fight");
 var health1 = document.getElementById("health1");
@@ -14,40 +18,24 @@ var dice2 = document.getElementById("dice2");
 var mv1;
 var mv2;
 
+//function to simulate a 4 sided die roll
+function roll() {
+  // generates a random number and then breaks it into quarters as if it were a 4 sided die.
+  return Math.floor(Math.random() * 4) + 1;
+}
+
 //set up button event listeners
-var atkBtn = document.getElementById("atk").onclick = function loadAtk() {
-  mv1 = "atk";
+document.getElementById("choices").addEventListener("click", function(e) {
+  mv1 = e.target.id;
   aiMove();
-};
-
-var blkBtn = document.getElementById("blk");
-
-blkBtn.onclick = function loadBlk() {
-  mv1 = "blk";
-  aiMove();
-};
-
-var rstBtn = document.getElementById("rst");
-
-rstBtn.onclick = function loadRest() {
-  mv1 = "rst";
-  aiMove();
-};
-
-var evdBtn = document.getElementById("evd");
-
-evdBtn.onclick = function loadEvade() {
-  mv1 = "evd";
-  aiMove();
-};
+});
 
 //  store computer input
 function aiMove() {
   //generate a random number to help decide attack
   var mv = roll();
-
   //if cpu stamina is 0, he will try to rest
-  if (sta2 == 0) {
+  if (sta2 <= 0) {
     mv2 = "rst";
 
     //if cpu stamina is 1, he will either block, rest, or evade
@@ -62,7 +50,7 @@ function aiMove() {
   }
 
   //if cpu health is high and player health is low he will either block or attack, most likely attack.
-  if (hlt1 >= 2 && hlt2 <= 2) {
+  else if (hlt1 >= 2 && hlt2 <= 2) {
     if (roll == 1) {
       mv2 = "blk";
     } else {
@@ -110,21 +98,6 @@ function aiMove() {
 }
 //  roll dice
 
-function roll() {
-  // generates a random number and then breaks it into quarters as if it were a 4 sided die.
-  var result = Math.random();
-  if (result <= 0.25) {
-    result = 1;
-  } else if (result <= 0.5) {
-    result = 2;
-  } else if (result <= 0.75) {
-    result = 3;
-  } else if (result <= 1) {
-    result = 4;
-  }
-  return result;
-}
-
 function move(mv1, mv2) {
   //roll 1 is player roll, roll 2 is cpu roll, advantage is determined by roll 1 subtract roll 2.
 
@@ -163,7 +136,7 @@ function move(mv1, mv2) {
         if (sta1 >= 2) {
           sta1 -= 2;
         } else {
-          hlt -= 1;
+          hlt1 -= 1;
           sta1 -= 1;
         }
       } else if (adv == -2) {
@@ -205,11 +178,11 @@ function move(mv1, mv2) {
           sta2 -= 2;
         } else if (sta2 == 1) {
           sta2 -= 1;
-          hlt -= 1;
+          hlt2 -= 1;
         } else if (sta2 == 0) {
           hlt2 -= 1;
         }
-        hlt -= 1;
+        hlt2 -= 1;
       }
     } else if (mv2 == "evd") {
       pic.src = "imgs/atkevd.png";
@@ -255,7 +228,7 @@ function move(mv1, mv2) {
           hlt1 -= 1;
           sta1 -= 1;
         }
-        hlt -= 1;
+        hlt1 -= 1;
       } else if (adv == -2) {
         if (sta1 >= 2) {
           sta1 -= 1;
@@ -313,13 +286,13 @@ function move(mv1, mv2) {
       if (adv == -3) {
         if (sta1 >= 2) {
           sta1 -= 2;
-        } else if (sta2 == 1) {
-          sta2 -= 1;
+        } else if (sta1 == 1) {
+          sta1 -= 1;
           hlt1 -= 1;
-        } else if (sta2 == 0) {
-          hlt2 -= 1;
+        } else if (sta1 == 0) {
+          hlt1 -= 1;
         }
-        hlt -= 1;
+        hlt1 -= 1;
       } else if (adv == -2) {
         if (sta1 >= 1) {
           sta1 -= 1;
@@ -506,7 +479,7 @@ function checkIfOver() {
   }
 }
 function renderLeft() {
-  if(sta1 >= 1) {
+  if (sta1 >= 1) {
     blkBtn.disabled = false;
     atkBtn.disabled = false;
     evdBtn.disabled = false;
