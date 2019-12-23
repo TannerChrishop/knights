@@ -7,6 +7,7 @@ var sta2 = 3;
 var blkBtn = document.getElementById("blk");
 var evdBtn = document.getElementById("evd");
 var atkBtn = document.getElementById("atk");
+var rstBtn = document.getElementById("rst");
 var rst2Btn = document.getElementById("rst2");
 var blk2Btn = document.getElementById("blk2");
 var evd2Btn = document.getElementById("evd2");
@@ -487,16 +488,29 @@ function checkIfOver() {
   if (hlt1 <= 0 && hlt2 <= 0) {
     health2.src = "imgs/health0.png";
     health1.src = "imgs/health0.png";
+
     setTimeout(function() {
       pic.src = "imgs/draw.png";
+      blkBtn.disabled = true;
+      atkBtn.disabled = true;
+      evdBtn.disabled = true;
+      rstBtn.disabled = true;
     }, 1000);
   } else if (hlt1 <= 0) {
     health1.src = "imgs/health0.png";
+    blkBtn.disabled = true;
+    atkBtn.disabled = true;
+    evdBtn.disabled = true;
+    rstBtn.disabled = true;
     setTimeout(function() {
       pic.src = "imgs/lose.png";
       health2.src = "imgs/health0.png";
     }, 1000);
   } else if (hlt2 <= 0) {
+    blkBtn.disabled = true;
+    atkBtn.disabled = true;
+    evdBtn.disabled = true;
+    rstBtn.disabled = true;
     health2.src = "imgs/health0.png";
     setTimeout(function() {
       pic.src = "imgs/win.png";
