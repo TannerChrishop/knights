@@ -7,6 +7,10 @@ var sta2 = 3;
 var blkBtn = document.getElementById("blk");
 var evdBtn = document.getElementById("evd");
 var atkBtn = document.getElementById("atk");
+var rst2Btn = document.getElementById("rst2");
+var blk2Btn = document.getElementById("blk2");
+var evd2Btn = document.getElementById("evd2");
+var atk2Btn = document.getElementById("atk2");
 // image to change during different moves
 var pic = document.getElementById("fight");
 var health1 = document.getElementById("health1");
@@ -44,7 +48,7 @@ function aiMove() {
       mv2 = "rst";
     } else if (mv == 3) {
       mv2 = "blk";
-    } else if (mv == 4) {
+    } else {
       mv2 = "evd";
     }
   }
@@ -90,7 +94,7 @@ function aiMove() {
       mv2 = "rst";
     } else if (mv == 3) {
       mv2 = "evd";
-    } else if (mv == 4) {
+    } else {
       mv2 = "atk";
     }
   }
@@ -105,6 +109,28 @@ function move(mv1, mv2) {
   dice1.src = "imgs/roll" + num1 + ".png";
   var num2 = roll();
   dice2.src = "imgs/roll" + num2 + ".png";
+
+  if (mv2 == "atk") {
+    atk2Btn.style.fontSize = "50px";
+    blk2Btn.style.fontSize = "1em";
+    rst2Btn.style.fontSize = "1em";
+    evd2Btn.style.fontSize = "1em";
+  } else if (mv2 == "blk") {
+    atk2Btn.style.fontSize = "1em";
+    blk2Btn.style.fontSize = "50px";
+    rst2Btn.style.fontSize = "1em";
+    evd2Btn.style.fontSize = "1em";
+  } else if (mv2 == "rst") {
+    atk2Btn.style.fontSize = "1em";
+    blk2Btn.style.fontSize = "1em";
+    rst2Btn.style.fontSize = "50px";
+    evd2Btn.style.fontSize = "1em";
+  } else if (mv2 == "evd") {
+    atk2Btn.style.fontSize = "1em";
+    blk2Btn.style.fontSize = "1em";
+    rst2Btn.style.fontSize = "1em";
+    evd2Btn.style.fontSize = "50px";
+  }
 
   var adv = num1 - num2;
 
@@ -318,8 +344,8 @@ function move(mv1, mv2) {
       if (adv >= -1 && adv <= 1) {
         sta1 += 1;
       } else if (adv == 2) {
-        hlt2 += 1;
-        sta2 += 1;
+        hlt1 += 1;
+        sta1 += 1;
       } else if (adv == 3) {
         hlt1 += 1;
         sta1 += 2;
@@ -463,19 +489,19 @@ function checkIfOver() {
     health1.src = "imgs/health0.png";
     setTimeout(function() {
       pic.src = "imgs/draw.png";
-    }, 1500);
+    }, 1000);
   } else if (hlt1 <= 0) {
     health1.src = "imgs/health0.png";
     setTimeout(function() {
       pic.src = "imgs/lose.png";
       health2.src = "imgs/health0.png";
-    }, 1500);
+    }, 1000);
   } else if (hlt2 <= 0) {
     health2.src = "imgs/health0.png";
     setTimeout(function() {
       pic.src = "imgs/win.png";
       health2.src = "imgs/health0.png";
-    }, 1500);
+    }, 1000);
   }
 }
 function renderLeft() {

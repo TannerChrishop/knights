@@ -14,17 +14,17 @@ button {
 }
 
 .rolls {
-    margin-top: 10px;
-    height: 120px;
-    margin-bottom: -30px;
+  margin-top: 10px;
+  height: 120px;
+  margin-bottom: -30px;
 }
 
 .diceDiv1 {
-  margin-left:285px;
+  margin-left: 285px;
 }
 .diceDiv2 {
-    margin-left: 500px;
-    margin-top: -85px;
+  margin-left: 500px;
+  margin-top: -85px;
 }
 .choices {
   position: relative;
