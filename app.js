@@ -3,6 +3,7 @@ var hlt1 = 3;
 var sta1 = 3;
 var hlt2 = 3;
 var sta2 = 3;
+
 // var rstBtn = document.getElementById("rst");
 var blkBtn = document.getElementById("blk");
 var evdBtn = document.getElementById("evd");
@@ -12,6 +13,7 @@ var rst2Btn = document.getElementById("rst2");
 var blk2Btn = document.getElementById("blk2");
 var evd2Btn = document.getElementById("evd2");
 var atk2Btn = document.getElementById("atk2");
+
 // image to change during different moves
 var pic = document.getElementById("fight");
 var health1 = document.getElementById("health1");
@@ -30,7 +32,7 @@ function roll() {
 }
 
 //set up button event listeners
-document.getElementById("choices").addEventListener("click", function(e) {
+document.getElementById("choices1").addEventListener("click", function(e) {
   mv1 = e.target.id;
   aiMove();
 });
@@ -42,9 +44,13 @@ function aiMove() {
   //if cpu stamina is 0, he will try to rest
   if (sta2 <= 0) {
     mv2 = "rst";
-
-    //if cpu stamina is 1, he will either block, rest, or evade
-  } else if (sta2 == 1) {
+  }
+  // if player stamina is 0 enemy will capitalize by attacking.
+  else if (sta1 <= 0) {
+    mv2 = "atk";
+  }
+  //if cpu stamina is 1, he will either block, rest, or evade
+  else if (sta2 == 1) {
     if (mv >= 2) {
       mv2 = "rst";
     } else if (mv == 3) {
@@ -53,7 +59,6 @@ function aiMove() {
       mv2 = "evd";
     }
   }
-
   //if cpu health is high and player health is low he will either block or attack, most likely attack.
   else if (hlt1 >= 2 && hlt2 <= 2) {
     if (roll == 1) {
@@ -61,7 +66,6 @@ function aiMove() {
     } else {
       mv2 = "atk";
     }
-
     // if player health is low he will try to attack or block
   } else if (hlt2 >= 2 && hlt1 == 1) {
     if (mv == 1) {
@@ -101,7 +105,6 @@ function aiMove() {
   }
   move(mv1, mv2);
 }
-//  roll dice
 
 function move(mv1, mv2) {
   //roll 1 is player roll, roll 2 is cpu roll, advantage is determined by roll 1 subtract roll 2.
@@ -135,161 +138,128 @@ function move(mv1, mv2) {
 
   var adv = num1 - num2;
 
+  // if both players attack it will cost both 1 stamina and damage dealt will depend on advantage determined from rolls
   if (mv1 == "atk") {
     if (mv2 == "atk") {
       pic.src = "imgs/atkatk.png";
+      sta1 -= 1;
+      sta2 -= 1;
       if (adv == -3) {
         hlt1 -= 2;
-        sta1 -= 1;
-        sta2 -= 1;
       } else if (adv == -2) {
         hlt1 -= 1;
-        sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv > -2 && adv < 2) {
-        sta1 -= 1;
       } else if (adv == 2) {
         hlt2 -= 1;
-        sta2 -= 1;
-        sta1 -= 1;
       } else if (adv == 3) {
         hlt2 -= 2;
-        sta2 -= 1;
-        sta1 -= 1;
       }
+      // If a disadvantaged roll consumes more stamina than a knight currently has, it will drain health instead only if opponent is attacking, otherwise nothing
     } else if (mv2 == "blk") {
       pic.src = "imgs/atkblk.png";
+      sta1 -= 1;
+      sta2 -= 1;
       if (adv == -3) {
-        if (sta1 >= 2) {
-          sta1 -= 2;
-        } else {
-          hlt1 -= 1;
-          sta1 -= 1;
-        }
+        sta1 -= 2;
       } else if (adv == -2) {
         sta1 -= 1;
-      } else if (adv > -2 && adv <= 1) {
-        sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv == 2) {
-        sta1 -= 1;
-        sta2 -= 1;
-        hlt2 -= 1;
-      } else if (adv == 3) {
-        sta2 -= 1;
-        hlt2 -= 1;
-      }
-    } else if (mv2 == "rst") {
-      pic.src = "imgs/atkrst.png";
-      if (adv == -3) {
-        sta2 += 2;
-        sta1 -= 1;
-      } else if (adv == -2) {
-        sta2 += 1;
-        sta1 -= 1;
-      } else if (adv == -1) {
-        sta1 -= 1;
-      } else if (adv == 0) {
-        sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv == 1) {
-        sta2 -= 1;
       } else if (adv == 2) {
         if (sta2 >= 1) {
           sta2 -= 1;
-        } else {
           hlt2 -= 1;
+        } else {
+          hlt2 -= 2;
         }
       } else if (adv == 3) {
         if (sta2 >= 2) {
           sta2 -= 2;
+          hlt2 -= 1;
         } else if (sta2 == 1) {
           sta2 -= 1;
-          hlt2 -= 1;
-        } else if (sta2 == 0) {
-          hlt2 -= 1;
+          hlt2 -= 2;
+        } else {
+          htl2 -= 3;
         }
-        hlt2 -= 1;
       }
-    } else if (mv2 == "evd") {
-      pic.src = "imgs/atkevd.png";
+      // rests will yeild less benefit even on an advantaged roll if your opponent is attacking.
+    } else if (mv2 == "rst") {
+      pic.src = "imgs/atkrst.png";
+      sta1 -= 1;
       if (adv == -3) {
         sta2 += 2;
-        sta1 -= 1;
       } else if (adv == -2) {
         sta2 += 1;
-        sta1 -= 1;
-      } else if (adv == -1) {
-        sta1 -= 1;
       } else if (adv == 0) {
-        sta1 -= 1;
         sta2 -= 1;
       } else if (adv == 1) {
-        sta2 -= 1;
-      } else if (adv == 2) {
-        sta1 -= 1;
         if (sta2 >= 2) {
           sta2 -= 2;
         } else {
-          hlt2 -= 1;
           sta2 -= 1;
+          hlt2 -= 1;
+        }
+      } else if (adv == 2) {
+        if (sta2 >= 1) {
+          sta2 -= 1;
+          hlt2 -= 1;
+        } else {
+          hlt2 -= 2;
         }
       } else if (adv == 3) {
-        hlt2 -= 1;
-        sta1 -= 1;
         if (sta2 >= 2) {
           sta2 -= 2;
-        } else {
           hlt2 -= 1;
+        } else if (sta2 == 1) {
           sta2 -= 1;
+          hlt2 -= 2;
+        } else if (sta2 == 0) {
+          hlt2 -= 3;
         }
       }
+      // evading will always use stamina, even if you're not under attack, whereas blocking only uses stamina when you are attacked and damage dealt depends on stamina.
+    } else if (mv2 == "evd") {
+      pic.src = "imgs/atkevd.png";
+      sta1 -= 1;
+      sta2 -= 2;
+      if (adv >= -3 && adv <= -1) {
+        sta2 += 1;
+      } else if (adv == 2) {
+        hlt2 -= 1;
+      } else if (adv == 3) {
+        hlt2 -= 2;
+      }
     }
+    // inverse of code from line 152 to match the opposite effect. (atk/blk vs blk/atk)
   } else if (mv1 == "blk") {
     if (mv2 == "atk") {
       pic.src = "imgs/blkatk.png";
+      sta1 -= 1;
+      sta2 -= 1;
       if (adv == -3) {
         if (sta1 >= 2) {
           sta1 -= 2;
-        } else {
           hlt1 -= 1;
+        } else if (sta1 == 1) {
           sta1 -= 1;
+          hlt1 -= 2;
+        } else {
+          htl1 -= 3;
         }
-        hlt1 -= 1;
       } else if (adv == -2) {
-        if (sta1 >= 2) {
+        if (sta1 >= 1) {
           sta1 -= 1;
-        } else {
           hlt1 -= 1;
+        } else {
+          hlt1 -= 2;
         }
-        sta1 -= 1;
-      } else if (adv == -1) {
-        sta1 -= 1;
-      } else if (adv == 0) {
-        sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv == 1) {
-        sta2 -= 1;
       } else if (adv == 2) {
-        sta1 -= 1;
-        if (sta2 >= 2) {
-          sta2 -= 2;
-        } else {
-          hlt2 -= 1;
-          sta2 -= 1;
-        }
+        sta2 -= 1;
       } else if (adv == 3) {
-        hlt2 -= 1;
-        if (sta2 >= 2) {
-          sta2 -= 2;
-        } else {
-          hlt2 -= 1;
-          sta2 -= 1;
-        }
-        sta1 -= 1;
+        sta2 -= 2;
       }
+      //nothing happens if both knights block
     } else if (mv2 == "blk") {
       pic.src = "imgs/blkblk.png";
+      //blocking when not under attack is useless no matter the roll. Resting works better when not under attack but still depends on roll/ advantage.
     } else if (mv2 == "rst") {
       pic.src = "imgs/blkrst.png";
       if (adv == -3) {
@@ -301,45 +271,51 @@ function move(mv1, mv2) {
       } else if (adv >= -1 && adv <= 1) {
         sta2 += 1;
       }
+      //evading uses stamina but can gain it back on an advantaged roll.
     } else if (mv2 == "evd") {
       pic.src = "imgs/blkevd.png";
-      if (adv < 1) {
+      sta2 -= 1;
+      if (adv <= 1) {
         sta2 += 1;
       }
     }
+    //inverse of line 179
   } else if (mv1 == "rst") {
     if (mv2 == "atk") {
       pic.src = "imgs/rstatk.png";
+      sta2 -= 1;
       if (adv == -3) {
         if (sta1 >= 2) {
           sta1 -= 2;
+          hlt1 -= 1;
         } else if (sta1 == 1) {
           sta1 -= 1;
-          hlt1 -= 1;
+          hlt1 -= 2;
         } else if (sta1 == 0) {
-          hlt1 -= 1;
+          hlt1 -= 3;
         }
-        hlt1 -= 1;
       } else if (adv == -2) {
         if (sta1 >= 1) {
           sta1 -= 1;
-        } else {
           hlt1 -= 1;
+        } else {
+          hlt1 -= 2;
         }
       } else if (adv == -1) {
-        sta1 -= 1;
+        if (sta1 >= 2) {
+          sta1 -= 2;
+        } else {
+          sta1 -= 1;
+          hlt1 -= 1;
+        }
       } else if (adv == 0) {
         sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv == 1) {
-        sta2 -= 1;
       } else if (adv == 2) {
         sta1 += 1;
-        sta2 -= 1;
       } else if (adv == 3) {
-        sta1 += 2;
-        sta2 -= 1;
+        sta2 += 2;
       }
+      // inverse of line 259
     } else if (mv2 == "blk") {
       pic.src = "imgs/rstblk.png";
       if (adv >= -1 && adv <= 1) {
@@ -351,15 +327,7 @@ function move(mv1, mv2) {
         hlt1 += 1;
         sta1 += 2;
       }
-      if (adv == -3) {
-        hlt2 += 1;
-        sta2 += 2;
-      } else if (adv == -2) {
-        hlt2 += 1;
-        sta2 += 1;
-      } else if (adv >= -1 && adv <= 1) {
-        sta2 += 1;
-      }
+      //resting restores stamina and even health on a high advantage roll
     } else if (mv2 == "rst") {
       pic.src = "imgs/rstrst.png";
       if (adv == -3) {
@@ -368,13 +336,7 @@ function move(mv1, mv2) {
       } else if (adv == -2) {
         hlt2 += 1;
         sta2 += 1;
-      } else if (adv == -1) {
-        sta1 += 1;
-        sta2 += 1;
-      } else if (adv == 0) {
-        sta1 += 1;
-        sta2 += 1;
-      } else if (adv == 1) {
+      } else if (adv >= -1 && adv <= 1) {
         sta1 += 1;
         sta2 += 1;
       } else if (adv == 2) {
@@ -384,20 +346,16 @@ function move(mv1, mv2) {
         sta1 += 2;
         hlt1 += 1;
       }
+      // if opponent evades and you rest
     } else if (mv2 == "evd") {
       pic.src = "imgs/rstevd.png";
-      if (adv == -3) {
+      sta2 -= 1;
+      if (adv >= -3 && adv <= -1) {
         sta2 += 1;
-      } else if (adv == -2) {
-        sta2 += 1;
-      } else if (adv == -1) {
-        sta2 += 1;
-        sta1 += 1;
       } else if (adv == 0) {
-        sta2 += 1;
         sta1 += 1;
       } else if (adv == 1) {
-        sta1 += 1;
+        sta1 += 2;
       } else if (adv == 2) {
         hlt1 += 1;
         sta1 += 1;
@@ -406,48 +364,28 @@ function move(mv1, mv2) {
         sta1 += 2;
       }
     }
+    // inverse of line 214
   } else if (mv1 == "evd") {
     if (mv2 == "atk") {
       pic.src = "imgs/evdatk.png";
+      sta1 -= 1;
+      sta2 -= 1;
       if (adv == -3) {
-        sta2 += 1;
-        sta1 -= 1;
-        hlt1 -= 1;
+        hlt1 -= 2;
       } else if (adv == -2) {
-        sta2 += 1;
-        sta1 -= 1;
-      } else if (adv == -1) {
-        sta1 -= 1;
-      } else if (adv == 0) {
-        sta1 -= 1;
-        sta2 -= 1;
-      } else if (adv == 1) {
-        sta2 -= 1;
-      } else if (adv == 2) {
-        sta1 -= 1;
-        if (sta2 >= 2) {
-          sta2 -= 2;
-        } else {
-          hlt2 -= 1;
-          sta2 -= 1;
-        }
-      } else if (adv == 3) {
-        hlt2 -= 1;
-        sta1 -= 1;
-        if (sta2 >= 2) {
-          sta2 -= 2;
-        } else {
-          hlt2 -= 1;
-          sta2 -= 1;
-        }
+        hlt1 -= 1;
+      } else if (adv >= 1 && adv <= 3) {
+        sta1 += 1;
       }
     } else if (mv2 == "blk") {
       pic.src = "imgs/evdblk.png";
       if (adv > -1) {
         sta1 += 1;
       }
+      // inverse of line 353
     } else if (mv2 == "rst") {
       pic.src = "imgs/evdrst.png";
+      st1 -= 1;
       if (adv == -3) {
         sta2 += 2;
         hlt2 += 1;
@@ -458,23 +396,17 @@ function move(mv1, mv2) {
         sta2 += 1;
       } else if (adv == 0) {
         sta2 += 1;
-        sta1 += 1;
-      } else if (adv == 1) {
-        sta2 += 1;
-        sta1 += 1;
-      } else if (adv == 2) {
-        sta1 += 1;
-      } else if (adv == 3) {
+      } else if (adv >= 1 && adv <= 3) {
         sta1 += 1;
       }
+      // if both players evade
     } else if (mv2 == "evd") {
       pic.src = "imgs/evdevd.png";
+      sta1 -= 1;
+      sta2 -= 1;
       if (adv < 0) {
         sta2 += 1;
-      } else if (adv == 0) {
-        sta1 += 1;
-        sta2 += 1;
-      } else if (adv >= 1) {
+      } else if (adv > 0) {
         sta1 += 1;
       }
     }

@@ -9,15 +9,11 @@ button {
   width: 200px;
 }
 
-.fights {
-  margin-top: -2%;
-}
-
-.rolls {
+ .rolls {
   margin-top: 10px;
   height: 120px;
   margin-bottom: -30px;
-}
+} 
 
 .diceDiv1 {
   margin-left: 285px;
@@ -26,21 +22,22 @@ button {
   margin-left: 500px;
   margin-top: -85px;
 }
+
 .choices {
   position: relative;
-  margin-left: 270px;
-  margin-top: -180px;
   font-family: fantasy;
   font-size: 36px;
+  margin-top: -180px;
+}
+
+.choices1 {
+  margin-left: 270px;
 }
 
 .choices2 {
-  position: relative;
   margin-left: 505px;
   text-align: justify;
-  margin-top: -180px;
-  font-family: fantasy;
-  font-size: 36px;
+  margin-top:-174px;
 }
 
 @media only screen and (min-width: 1600px) {
